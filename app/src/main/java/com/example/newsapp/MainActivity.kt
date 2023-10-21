@@ -68,6 +68,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setToolbarTitle(title: String) {
-        supportActionBar?.title = title
+        binding.toolbarTitle.text = title
     }
 }
