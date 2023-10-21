@@ -9,10 +9,28 @@
         android:id="@+id/favoritesFragment"
         android:name="com.example.newsapp.ui.favorites.FavoritesFragment"
         android:label="fragment_favorites"
-        tools:layout="@layout/fragment_favorites" />
+        tools:layout="@layout/fragment_favorites" >
+        <action
+            android:id="@+id/action_favoritesFragment_to_articleDetailsFragment"
+            app:destination="@id/articleDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/newsFragment"
         android:name="com.example.newsapp.ui.home.NewsFragment"
         android:label="fragment_news"
-        tools:layout="@layout/fragment_news"/>
+        tools:layout="@layout/fragment_news">
+        <action
+            android:id="@+id/newsToDetail"
+            app:destination="@id/articleDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/articleDetailsFragment"
+        android:name="com.example.newsapp.ui.detail.ArticleDetailsFragment"
+        android:label="fragment_article_details"
+        tools:layout="@layout/fragment_article_details" >
+        <argument
+            android:name="articleId"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
 </navigation>
