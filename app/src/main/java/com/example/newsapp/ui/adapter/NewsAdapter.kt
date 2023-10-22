@@ -42,7 +42,7 @@ class NewsAdapter(
             binding.apply {
                 tvTitle.text = article.title
                 tvDescription.text = article.description
-                ivArticleImage.loadUrl(article.urlToImage)
+                ivArticleImage.loadUrl(article.urlToImage?:"")
             }
 
         }
