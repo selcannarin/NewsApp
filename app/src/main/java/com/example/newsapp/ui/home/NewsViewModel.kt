@@ -20,12 +20,44 @@ class NewsViewModel @Inject constructor(
     private val _newsState = MutableStateFlow(NewsViewState())
     val newsState: StateFlow<NewsViewState> = _newsState.asStateFlow()
 
-    var breakingNewsPage = 1
-    var countryCode = "tr"
+    var newsPage = 1
+    var countryCode = "us"
 
 
     suspend fun getBreakingNews() {
-        newsRepository.getBreakingNews(countryCode, breakingNewsPage).collect() { result ->
+        newsRepository.getBreakingNews(countryCode, newsPage).collect() { result ->
+            when (result) {
+                is NetworkResult.Success -> {
+                    _newsState.value =
+                        result.data?.let {
+                            NewsViewState(
+                                news = it,
+                                isLoading = false
+                            )
+                        }!!
+                }
+
+                is NetworkResult.Error -> {
+                    _newsState.update {
+                        it.copy(
+                            isLoading = false,
+                            error = result.message ?: "An unexpected error occurred"
+                        )
+                    }
+                }
+
+                is NetworkResult.Loading -> {
+                    _newsState.update {
+                        it.copy(isLoading = true)
+                    }
+                }
+            }
+
+        }
+    }
+
+    suspend fun searchNews(searchQuery: String) {
+        newsRepository.searchNews(searchQuery, newsPage).collect() { result ->
             when (result) {
                 is NetworkResult.Success -> {
                     _newsState.value =

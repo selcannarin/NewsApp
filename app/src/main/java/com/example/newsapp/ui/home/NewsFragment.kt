@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -35,6 +36,24 @@ class NewsFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                searchNews(query.orEmpty())
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText.isNullOrBlank()) {
+                    searchNews("")
+                }
+                return true
+            }
+        })
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         (requireActivity() as MainActivity).setToolbarTitle(getString(R.string.breaking_news))
@@ -43,6 +62,20 @@ class NewsFragment : Fragment() {
     private fun updateNewsState() {
         viewLifecycleOwner.lifecycleScope.launch {
             newsViewModel.getBreakingNews()
+            newsViewModel.newsState.collect {
+                if (it.isLoading) {
+                } else if (it.news?.articles?.isNotEmpty() == true) {
+                    initRecycler(it.news.articles)
+                } else {
+                    Toast.makeText(context, "No Data Found", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun searchNews(query: String) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            newsViewModel.searchNews(query)
             newsViewModel.newsState.collect {
                 if (it.isLoading) {
                 } else if (it.news?.articles?.isNotEmpty() == true) {
