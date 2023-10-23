@@ -1,20 +1,53 @@
 package com.example.newsapp.ui.detail
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.newsapp.R
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
+import com.example.newsapp.MainActivity
+import com.example.newsapp.data.model.Article
+import com.example.newsapp.databinding.FragmentArticleDetailsBinding
+import com.example.newsapp.ui.home.NewsViewModel
+import com.example.newsapp.utils.loadUrl
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ArticleDetailsFragment : Fragment() {
+
+    private lateinit var binding: FragmentArticleDetailsBinding
+    private val newsViewModel: NewsViewModel by viewModels()
+    private val args: ArticleDetailsFragmentArgs by navArgs()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_article_details, container, false)
+        binding = FragmentArticleDetailsBinding.inflate(inflater)
+        (requireActivity() as MainActivity).setToolbarVisibilityGONE()
+        val article = args.article
+        setArticleUi(article)
+        binding.imageViewFavorite.setOnClickListener {
+            saveArticle(article)
+        }
+        return binding.root
+    }
+
+    private fun setArticleUi(article: Article) {
+        with(binding) {
+            textViewTitle.text = article.title
+            textViewDescription.text = article.description
+            textViewAuthor.text = article.author
+            textViewPublishedAt.text = article.publishedAt
+            imageViewArticle.loadUrl(article.urlToImage ?: "")
+        }
+    }
+
+    private fun saveArticle(article: Article) {
+        newsViewModel.saveArticle(article)
+        Toast.makeText(context, "Article added to favorites.", Toast.LENGTH_SHORT).show()
     }
 }
