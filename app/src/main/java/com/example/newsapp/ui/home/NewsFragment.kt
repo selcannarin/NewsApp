@@ -90,8 +90,13 @@ class NewsFragment : Fragment() {
     private fun initRecycler(list: List<Article>) {
         binding.rvNews.apply {
             adapter = NewsAdapter(list, NewsAdapter.OnClickListener {
-                val action = NewsFragmentDirections.newsToDetail(it)
-                findNavController().navigate(action)
+                val bundle = Bundle().apply {
+                    putSerializable("article", it)
+                }
+                findNavController().navigate(
+                    R.id.newsToDetail,
+                    bundle
+                )
             })
 
         }

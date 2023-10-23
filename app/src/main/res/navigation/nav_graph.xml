@@ -11,7 +11,7 @@
         android:label="fragment_favorites"
         tools:layout="@layout/fragment_favorites" >
         <action
-            android:id="@+id/action_favoritesFragment_to_articleDetailsFragment"
+            android:id="@+id/favoritesToDetail"
             app:destination="@id/articleDetailsFragment" />
     </fragment>
     <fragment
@@ -29,8 +29,7 @@
         android:label="fragment_article_details"
         tools:layout="@layout/fragment_article_details" >
         <argument
-            android:name="articleId"
-            app:argType="integer"
-            android:defaultValue="0" />
+            android:name="article"
+            app:argType="com.example.newsapp.data.model.Article" />
     </fragment>
 </navigation>
