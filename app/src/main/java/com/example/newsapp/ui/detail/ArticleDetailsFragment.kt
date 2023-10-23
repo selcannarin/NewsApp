@@ -1,5 +1,6 @@
 package com.example.newsapp.ui.detail
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -32,12 +33,23 @@ class ArticleDetailsFragment : Fragment() {
         (requireActivity() as MainActivity).setToolbarVisibilityGONE()
         val article = args.article
         setArticleUi(article)
-        binding.imageViewFavorite.setOnClickListener {
-            saveArticle(article)
+
+        with(binding){
+
+            imageViewFavorite.setOnClickListener {
+                saveArticle(article)
+            }
+
+            buttonNewsSource.setOnClickListener {
+                navigateToSource(article.url.toString())
+            }
+
+            imageViewShare.setOnClickListener{
+                shareArticle(article.url.toString())
+            }
+
         }
-        binding.buttonNewsSource.setOnClickListener {
-            navigateToSource(article.url.toString())
-        }
+
         return binding.root
     }
 
@@ -62,6 +74,13 @@ class ArticleDetailsFragment : Fragment() {
         findNavController().navigate(
             R.id.articleToSource, bundle
         )
+    }
+
+    private fun shareArticle(articleUrl: String){
+            val shareIntent = Intent(Intent.ACTION_SEND)
+            shareIntent.type = "text/plain"
+            shareIntent.putExtra(Intent.EXTRA_TEXT, articleUrl)
+            startActivity(Intent.createChooser(shareIntent, "Share article via..."))
     }
 
 }
