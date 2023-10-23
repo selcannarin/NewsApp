@@ -1,6 +1,9 @@
 package com.example.newsapp.ui.home
 
 import android.app.Application
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
+import com.example.newsapp.data.model.Article
 import com.example.newsapp.data.model.viewstate.NewsViewState
 import com.example.newsapp.data.remote.NetworkResult
 import com.example.newsapp.data.repository.NewsRepository
@@ -10,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,6 +21,7 @@ class NewsViewModel @Inject constructor(
     private val newsRepository: NewsRepository,
     application: Application
 ) : BaseViewModel(application) {
+
     private val _newsState = MutableStateFlow(NewsViewState())
     val newsState: StateFlow<NewsViewState> = _newsState.asStateFlow()
 
@@ -87,6 +92,16 @@ class NewsViewModel @Inject constructor(
 
         }
 
+    }
+
+    fun saveArticle(article: Article) = viewModelScope.launch {
+        newsRepository.upsert(article)
+    }
+
+    val favoriteNewsLiveData: LiveData<List<Article>> = newsRepository.getFavoriteNews()
+
+    fun deleteArticle(article: Article) = viewModelScope.launch {
+        newsRepository.deleteArticle(article)
     }
 }
 

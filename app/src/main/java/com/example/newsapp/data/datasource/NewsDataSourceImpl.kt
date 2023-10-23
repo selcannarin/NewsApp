@@ -1,5 +1,6 @@
 package com.example.newsapp.data.datasource
 
+import androidx.lifecycle.LiveData
 import com.example.newsapp.data.local.NewsDatabase
 import com.example.newsapp.data.model.Article
 import com.example.newsapp.data.model.NewsResponse
@@ -35,12 +36,12 @@ open class NewsDataSourceImpl @Inject constructor(
         db.getNewsDao().upsert(article)
     }
 
-    override fun getFavoriteNews() {
-        db.getNewsDao().getAllArticles()
+    override fun getFavoriteNews():LiveData<List<Article>> {
+        return db.getNewsDao().getAllArticles()
     }
 
-    override suspend fun deleteArticle(article: Article) {
+    override suspend fun deleteArticle(article: Article) =
         db.getNewsDao().deleteArticle(article)
-    }
+
 
 }

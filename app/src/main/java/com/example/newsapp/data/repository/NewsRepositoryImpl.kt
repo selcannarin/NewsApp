@@ -1,5 +1,6 @@
 package com.example.newsapp.data.repository
 
+import androidx.lifecycle.LiveData
 import com.example.newsapp.data.datasource.NewsDataSource
 import com.example.newsapp.data.model.Article
 import com.example.newsapp.data.model.NewsResponse
@@ -23,15 +24,17 @@ class NewsRepositoryImpl @Inject constructor(
     ): Flow<NetworkResult<NewsResponse>> =
         newsDataSource.searchNews(query, pageNumber)
 
-    override suspend fun upsert(article: Article) {
+    override suspend fun upsert(article: Article) =
         newsDataSource.upsert(article)
+
+
+    override fun getFavoriteNews():LiveData<List<Article>> {
+        return newsDataSource.getFavoriteNews()
     }
 
-    override fun getFavoriteNews() {
-        newsDataSource.getFavoriteNews()
-    }
 
-    override suspend fun deleteArticle(article: Article) {
+
+    override suspend fun deleteArticle(article: Article) =
         newsDataSource.deleteArticle(article)
-    }
+
 }

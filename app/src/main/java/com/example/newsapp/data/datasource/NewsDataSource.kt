@@ -1,5 +1,6 @@
 package com.example.newsapp.data.datasource
 
+import androidx.lifecycle.LiveData
 import com.example.newsapp.data.model.Article
 import com.example.newsapp.data.model.NewsResponse
 import com.example.newsapp.data.remote.NetworkResult
@@ -16,7 +17,7 @@ interface NewsDataSource {
 
     suspend fun upsert(article: Article)
 
-    fun getFavoriteNews()
+    fun getFavoriteNews():LiveData<List<Article>>
 
     suspend fun deleteArticle(article: Article)
 }
