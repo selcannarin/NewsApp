@@ -3,6 +3,7 @@ package com.example.newsapp
 import android.content.Context
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -69,5 +70,11 @@ class MainActivity : AppCompatActivity() {
 
     fun setToolbarTitle(title: String) {
         binding.toolbarTitle.text = title
+    }
+    fun setToolbarVisibilityGONE() {
+        binding.toolbar.visibility = View.GONE
+    }
+    fun setToolbarVisibilityVISIBLE() {
+        binding.toolbar.visibility = View.VISIBLE
     }
 }
