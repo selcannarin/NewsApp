@@ -31,5 +31,17 @@
         <argument
             android:name="article"
             app:argType="com.example.newsapp.data.model.Article" />
+        <action
+            android:id="@+id/articleToSource"
+            app:destination="@id/newsSourceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newsSourceFragment"
+        android:name="com.example.newsapp.ui.detail.NewsSourceFragment"
+        android:label="fragment_news_source"
+        tools:layout="@layout/fragment_news_source" >
+        <argument
+            android:name="articleUrl"
+            app:argType="string" />
     </fragment>
 </navigation>

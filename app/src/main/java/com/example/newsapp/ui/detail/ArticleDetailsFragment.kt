@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.newsapp.MainActivity
+import com.example.newsapp.R
 import com.example.newsapp.data.model.Article
 import com.example.newsapp.databinding.FragmentArticleDetailsBinding
 import com.example.newsapp.ui.home.NewsViewModel
@@ -33,6 +35,9 @@ class ArticleDetailsFragment : Fragment() {
         binding.imageViewFavorite.setOnClickListener {
             saveArticle(article)
         }
+        binding.buttonNewsSource.setOnClickListener {
+            navigateToSource(article.url.toString())
+        }
         return binding.root
     }
 
@@ -50,4 +55,13 @@ class ArticleDetailsFragment : Fragment() {
         newsViewModel.saveArticle(article)
         Toast.makeText(context, "Article added to favorites.", Toast.LENGTH_SHORT).show()
     }
+    private fun navigateToSource(articleUrl: String){
+        val bundle = Bundle().apply {
+            putSerializable("articleUrl", articleUrl)
+        }
+        findNavController().navigate(
+            R.id.articleToSource, bundle
+        )
+    }
+
 }
