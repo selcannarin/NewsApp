@@ -9,4 +9,5 @@
     <string name="news">News</string>
     <string name="favorites">Favorites</string>
     <string name="breaking_news">Breaking News</string>
+    <string name="favorite_news">Favorite News</string>
 </resources>
