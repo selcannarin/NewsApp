@@ -16,6 +16,7 @@ class NewsAdapter(
     private val onClickListener: OnClickListener
 ) : ListAdapter<Article, NewsAdapter.ViewHolder>(DiffCallback()) {
 
+    private val filteredNews = filterDuplicates(news)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.cardview_item_article, parent, false)
@@ -24,14 +25,14 @@ class NewsAdapter(
 
     override fun getItemCount(): Int {
 
-        return news.size
+        return filteredNews.size
 
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(news[position])
+        holder.bind(filteredNews[position])
         holder.itemView.setOnClickListener {
-            news[position].id?.let { it1 -> onClickListener.clickListener(it1) }
+            onClickListener.clickListener(filteredNews[position])
         }
     }
 
@@ -58,7 +59,21 @@ class NewsAdapter(
         }
     }
 
-    class OnClickListener(val clickListener: (articleId: Int) -> Unit) {
-        fun onClick(articleId: Int) = clickListener(articleId)
+    class OnClickListener(val clickListener: (article: Article) -> Unit) {
+        fun onClick(article: Article) = clickListener(article)
     }
+
+    fun filterDuplicates(list: List<Article>): List<Article> {
+        val filteredList = mutableListOf<Article>()
+        val uniqueTitles = HashSet<String>()
+
+        for (article in list) {
+            if (article.title?.let { uniqueTitles.add(it) } == true) {
+                filteredList.add(article)
+            }
+        }
+
+        return filteredList
+    }
+
 }
