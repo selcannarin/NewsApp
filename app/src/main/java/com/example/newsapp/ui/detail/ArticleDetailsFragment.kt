@@ -13,8 +13,8 @@ import androidx.navigation.fragment.navArgs
 import com.example.newsapp.R
 import com.example.newsapp.data.model.Article
 import com.example.newsapp.databinding.FragmentArticleDetailsBinding
-import com.example.newsapp.ui.MainActivity
-import com.example.newsapp.ui.home.NewsViewModel
+import com.example.newsapp.ui.base.MainActivity
+import com.example.newsapp.ui.news.NewsViewModel
 import com.example.newsapp.utils.loadUrl
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -30,11 +30,23 @@ class ArticleDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentArticleDetailsBinding.inflate(inflater)
+
         (requireActivity() as MainActivity).setToolbarVisibilityGONE()
+
         val article = args.article
-        setArticleUi(article)
+        initViews(article)
+
+        return binding.root
+    }
+
+    private fun initViews(article: Article) {
 
         with(binding) {
+            textViewTitle.text = article.title
+            textViewDescription.text = article.description
+            textViewAuthor.text = article.author
+            textViewPublishedAt.text = article.publishedAt
+            imageViewArticle.loadUrl(article.urlToImage ?: "")
 
             imageViewFavorite.setOnClickListener {
                 saveArticle(article)
@@ -52,19 +64,8 @@ class ArticleDetailsFragment : Fragment() {
                 setBackButton()
             }
         }
-
-        return binding.root
     }
 
-    private fun setArticleUi(article: Article) {
-        with(binding) {
-            textViewTitle.text = article.title
-            textViewDescription.text = article.description
-            textViewAuthor.text = article.author
-            textViewPublishedAt.text = article.publishedAt
-            imageViewArticle.loadUrl(article.urlToImage ?: "")
-        }
-    }
 
     private fun saveArticle(article: Article) {
         newsViewModel.saveArticle(article)

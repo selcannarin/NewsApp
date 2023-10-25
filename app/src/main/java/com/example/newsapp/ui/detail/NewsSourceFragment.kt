@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.example.newsapp.R
 import com.example.newsapp.databinding.FragmentNewsSourceBinding
-import com.example.newsapp.ui.MainActivity
+import com.example.newsapp.ui.base.MainActivity
 
 class NewsSourceFragment : Fragment() {
 

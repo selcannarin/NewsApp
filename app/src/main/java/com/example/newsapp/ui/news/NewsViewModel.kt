@@ -1,4 +1,4 @@
-package com.example.newsapp.ui.home
+package com.example.newsapp.ui.news
 
 import android.app.Application
 import androidx.lifecycle.LiveData
@@ -7,7 +7,7 @@ import com.example.newsapp.data.model.Article
 import com.example.newsapp.data.model.viewstate.NewsViewState
 import com.example.newsapp.data.remote.NetworkResult
 import com.example.newsapp.data.repository.NewsRepository
-import com.example.newsapp.ui.BaseViewModel
+import com.example.newsapp.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,7 +26,6 @@ class NewsViewModel @Inject constructor(
     val newsState: StateFlow<NewsViewState> = _newsState.asStateFlow()
 
 
-    var newsPage = 1
     var countryCode = "us"
 
     suspend fun getBreakingNews(page: Int) {

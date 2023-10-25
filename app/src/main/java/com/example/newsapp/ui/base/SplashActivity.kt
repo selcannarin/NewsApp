@@ -1,4 +1,4 @@
-package com.example.newsapp.ui
+package com.example.newsapp.ui.base
 
 import android.annotation.SuppressLint
 import android.content.Intent

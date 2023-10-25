@@ -13,9 +13,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.newsapp.R
 import com.example.newsapp.data.model.Article
 import com.example.newsapp.databinding.FragmentFavoritesBinding
-import com.example.newsapp.ui.MainActivity
-import com.example.newsapp.ui.adapter.NewsAdapter
-import com.example.newsapp.ui.home.NewsViewModel
+import com.example.newsapp.ui.base.MainActivity
+import com.example.newsapp.ui.base.adapter.NewsAdapter
+import com.example.newsapp.ui.news.NewsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -40,15 +40,12 @@ class FavoritesFragment : Fragment() {
 
         updateNewsState()
 
-        newsViewModel.favoriteNewsLiveData.observe(viewLifecycleOwner, Observer { articles ->
-            initRecycler(articles)
-        })
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         (requireActivity() as MainActivity).setToolbarTitle(getString(R.string.favorite_news))
     }
 
