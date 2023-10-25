@@ -10,10 +10,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.example.newsapp.MainActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.newsapp.R
 import com.example.newsapp.data.model.Article
 import com.example.newsapp.databinding.FragmentNewsBinding
+import com.example.newsapp.ui.MainActivity
 import com.example.newsapp.ui.adapter.NewsAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -24,6 +26,13 @@ class NewsFragment : Fragment() {
     private lateinit var binding: FragmentNewsBinding
 
     private val newsViewModel: NewsViewModel by viewModels()
+
+    var currentPage = 1
+    private val QUERY_PAGE_SIZE = 20
+    private val MAX_PAGES = 10
+    private var isLoading = false
+    private var isLastPage = false
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,7 +70,7 @@ class NewsFragment : Fragment() {
 
     private fun updateNewsState() {
         viewLifecycleOwner.lifecycleScope.launch {
-            newsViewModel.getBreakingNews()
+            newsViewModel.getBreakingNews(currentPage)
             newsViewModel.newsState.collect {
                 if (it.isLoading) {
                 } else if (it.news?.articles?.isNotEmpty() == true) {
@@ -75,7 +84,7 @@ class NewsFragment : Fragment() {
 
     private fun searchNews(query: String) {
         viewLifecycleOwner.lifecycleScope.launch {
-            newsViewModel.searchNews(query)
+            newsViewModel.searchNews(query, currentPage)
             newsViewModel.newsState.collect {
                 if (it.isLoading) {
                 } else if (it.news?.articles?.isNotEmpty() == true) {
@@ -99,6 +108,38 @@ class NewsFragment : Fragment() {
                 )
             })
 
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+
+                    val layoutManager = layoutManager as LinearLayoutManager
+                    val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+                    val visibleItemCount = layoutManager.childCount
+                    val totalItemCount = layoutManager.itemCount
+
+                    val isNotLoadingAndNotLastPage = !isLoading && !isLastPage
+                    val isAtLastItem = firstVisibleItemPosition + visibleItemCount >= totalItemCount
+                    val isNotAtBeginning = firstVisibleItemPosition >= 0
+                    val isTotalMoreThanVisible = totalItemCount >= QUERY_PAGE_SIZE
+                    val shouldPaginate =
+                        isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning &&
+                                isTotalMoreThanVisible
+                    if (shouldPaginate) {
+                        loadNextPage()
+                    }
+                }
+            })
         }
+    }
+
+    private fun loadNextPage() {
+        if (currentPage < MAX_PAGES) {
+            currentPage++
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as MainActivity).setToolbarVisibilityVISIBLE()
     }
 }

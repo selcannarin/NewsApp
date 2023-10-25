@@ -8,10 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.example.newsapp.MainActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.newsapp.R
 import com.example.newsapp.data.model.Article
 import com.example.newsapp.databinding.FragmentFavoritesBinding
+import com.example.newsapp.ui.MainActivity
 import com.example.newsapp.ui.adapter.NewsAdapter
 import com.example.newsapp.ui.home.NewsViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,6 +25,12 @@ class FavoritesFragment : Fragment() {
 
     private val newsViewModel: NewsViewModel by viewModels()
 
+    var currentPage = 1
+    private val QUERY_PAGE_SIZE = 20
+    private val MAX_PAGES = 10
+    private var isLoading = false
+    private var isLastPage = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -31,6 +39,10 @@ class FavoritesFragment : Fragment() {
         (requireActivity() as MainActivity).setToolbarVisibilityVISIBLE()
 
         updateNewsState()
+
+        newsViewModel.favoriteNewsLiveData.observe(viewLifecycleOwner, Observer { articles ->
+            initRecycler(articles)
+        })
 
         return binding.root
     }
@@ -59,6 +71,33 @@ class FavoritesFragment : Fragment() {
                 )
             })
 
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+
+                    val layoutManager = layoutManager as LinearLayoutManager
+                    val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+                    val visibleItemCount = layoutManager.childCount
+                    val totalItemCount = layoutManager.itemCount
+
+                    val isNotLoadingAndNotLastPage = !isLoading && !isLastPage
+                    val isAtLastItem = firstVisibleItemPosition + visibleItemCount >= totalItemCount
+                    val isNotAtBeginning = firstVisibleItemPosition >= 0
+                    val isTotalMoreThanVisible = totalItemCount >= QUERY_PAGE_SIZE
+                    val shouldPaginate =
+                        isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning &&
+                                isTotalMoreThanVisible
+                    if (shouldPaginate) {
+                        loadNextPage()
+                    }
+                }
+            })
+        }
+    }
+
+    private fun loadNextPage() {
+        if (currentPage < MAX_PAGES) {
+            currentPage++
         }
     }
 
