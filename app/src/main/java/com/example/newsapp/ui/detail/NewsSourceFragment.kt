@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
-import com.example.newsapp.MainActivity
 import com.example.newsapp.R
 import com.example.newsapp.databinding.FragmentNewsSourceBinding
+import com.example.newsapp.ui.MainActivity
 
 class NewsSourceFragment : Fragment() {
 

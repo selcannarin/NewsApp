@@ -1,4 +1,4 @@
-package com.example.newsapp
+package com.example.newsapp.ui
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -7,6 +7,7 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
+import com.example.newsapp.R
 import com.example.newsapp.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             setContentView(binding.root)
             setupNavigation()
+            setBackButton()
         }
     }
 
@@ -76,5 +78,11 @@ class MainActivity : AppCompatActivity() {
     }
     fun setToolbarVisibilityVISIBLE() {
         binding.toolbar.visibility = View.VISIBLE
+    }
+
+    fun setBackButton(){
+        binding.ivBackButton.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
     }
 }

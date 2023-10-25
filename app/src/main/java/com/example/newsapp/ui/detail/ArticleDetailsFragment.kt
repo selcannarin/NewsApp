@@ -10,10 +10,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.newsapp.MainActivity
 import com.example.newsapp.R
 import com.example.newsapp.data.model.Article
 import com.example.newsapp.databinding.FragmentArticleDetailsBinding
+import com.example.newsapp.ui.MainActivity
 import com.example.newsapp.ui.home.NewsViewModel
 import com.example.newsapp.utils.loadUrl
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,7 +34,7 @@ class ArticleDetailsFragment : Fragment() {
         val article = args.article
         setArticleUi(article)
 
-        with(binding){
+        with(binding) {
 
             imageViewFavorite.setOnClickListener {
                 saveArticle(article)
@@ -44,10 +44,13 @@ class ArticleDetailsFragment : Fragment() {
                 navigateToSource(article.url.toString())
             }
 
-            imageViewShare.setOnClickListener{
+            imageViewShare.setOnClickListener {
                 shareArticle(article.url.toString())
             }
 
+            ivBackButton.setOnClickListener {
+                setBackButton()
+            }
         }
 
         return binding.root
@@ -67,7 +70,8 @@ class ArticleDetailsFragment : Fragment() {
         newsViewModel.saveArticle(article)
         Toast.makeText(context, "Article added to favorites.", Toast.LENGTH_SHORT).show()
     }
-    private fun navigateToSource(articleUrl: String){
+
+    private fun navigateToSource(articleUrl: String) {
         val bundle = Bundle().apply {
             putSerializable("articleUrl", articleUrl)
         }
@@ -76,11 +80,15 @@ class ArticleDetailsFragment : Fragment() {
         )
     }
 
-    private fun shareArticle(articleUrl: String){
-            val shareIntent = Intent(Intent.ACTION_SEND)
-            shareIntent.type = "text/plain"
-            shareIntent.putExtra(Intent.EXTRA_TEXT, articleUrl)
-            startActivity(Intent.createChooser(shareIntent, "Share article via..."))
+    private fun setBackButton() {
+        findNavController().navigate(R.id.detailToNews)
+    }
+
+    private fun shareArticle(articleUrl: String) {
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.type = "text/plain"
+        shareIntent.putExtra(Intent.EXTRA_TEXT, articleUrl)
+        startActivity(Intent.createChooser(shareIntent, "Share article via..."))
     }
 
 }

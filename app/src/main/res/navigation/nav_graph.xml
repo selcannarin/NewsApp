@@ -34,6 +34,9 @@
         <action
             android:id="@+id/articleToSource"
             app:destination="@id/newsSourceFragment" />
+        <action
+            android:id="@+id/detailToNews"
+            app:destination="@id/newsFragment" />
     </fragment>
     <fragment
         android:id="@+id/newsSourceFragment"
